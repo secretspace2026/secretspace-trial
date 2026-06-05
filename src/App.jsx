@@ -138,6 +138,7 @@ function globalCss(T, dark) {
     .mobile-search-btn{display:flex !important;}
     .main-pad{padding:12px 14px 90px !important;}
     .header-h{height:52px !important;}
+    .desktop-main-margins{margin-left:0 !important;margin-right:0 !important;}
 
     @media(min-width:768px){
       .desktop-only{display:flex !important;}
@@ -149,6 +150,7 @@ function globalCss(T, dark) {
       .mobile-search-btn{display:none !important;}
       .main-pad{padding:20px 24px 24px !important;}
       .header-h{height:56px !important;}
+      .desktop-main-margins{margin-left:220px !important;margin-right:240px !important;}
       body{overflow:auto;}
     }
 
@@ -267,10 +269,10 @@ export default function App() {
       )}
 
       {/* ── Body ── */}
-      <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative"}}>
+      <div style={{display:"flex",flex:1,position:"relative"}}>
 
-        {/* Desktop Left Sidebar */}
-        <aside className="desktop-sidebar" style={{width:220,borderRight:`1px solid ${T.border}`,background:T.sidebar,flexDirection:"column",flexShrink:0,overflow:"hidden",height:"calc(100vh - 56px)",position:"sticky",top:56}}>
+        {/* Desktop Left Sidebar — fixed, always visible */}
+        <aside className="desktop-sidebar" style={{width:220,borderRight:`1px solid ${T.border}`,background:T.sidebar,flexDirection:"column",flexShrink:0,overflow:"hidden",height:"calc(100vh - 56px)",position:"fixed",top:56,left:0,zIndex:40}}>
           <nav style={{padding:"12px 8px",display:"flex",flexDirection:"column",gap:1}}>
             {NAV_ITEMS.map(({id,label,Icon})=>(
               <button key={id} onClick={()=>setTab(id)} className="ni" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,border:"none",background:tab===id?T.surface2:"none",color:tab===id?T.text:T.sub,fontSize:"0.83rem",fontWeight:tab===id?600:400,textAlign:"left",transition:"all 0.15s"}}>
@@ -298,21 +300,21 @@ export default function App() {
           </div>
         </aside>
 
-        {/* Center */}
-        <main style={{flex:1,display:"flex",WebkitOverflowScrolling:"touch"}}>
+        {/* Center — offset by sidebar widths so it doesn't go under fixed panels */}
+        <main className="desktop-main-margins" style={{flex:1,display:"flex",WebkitOverflowScrolling:"touch"}}>
           <div className="main-pad" style={{flex:1,width:"100%",boxSizing:"border-box"}}>
             {tab==="feed"    && <FeedView    T={T} posts={posts} toggleHeart={toggleHeart} setModal={setModal} user={user} guestId={guestId}/>}
             {tab==="rooms"   && <RoomsView   T={T} rooms={rooms} msgs={msgs} sendMsg={sendMsg} user={user} guestId={guestId} setModal={setModal} activeRoom={activeRoom} setActiveRoom={setActiveRoom}/>}
             {tab==="account" && <AccountView T={T} user={user} guestId={guestId} setModal={setModal}/>}
             {tab==="friends" && <FriendsView T={T}/>}
           </div>
-
-          {/* Desktop Right Panel */}
-          <aside className="desktop-right" style={{width:240,borderLeft:`1px solid ${T.border}`,padding:"20px 14px",flexDirection:"column",gap:16,flexShrink:0,overflowY:"auto",height:"calc(100vh - 56px)",position:"sticky",top:56}}>
-            <RightStats T={T} posts={posts} rooms={rooms}/>
-            <TrendingPanel T={T} posts={posts} toggleHeart={toggleHeart}/>
-          </aside>
         </main>
+
+        {/* Desktop Right Panel — fixed, always visible */}
+        <aside className="desktop-right" style={{width:240,borderLeft:`1px solid ${T.border}`,padding:"20px 14px",flexDirection:"column",gap:16,flexShrink:0,overflowY:"auto",height:"calc(100vh - 56px)",position:"fixed",top:56,right:0,zIndex:40,background:T.sidebar}}>
+          <RightStats T={T} posts={posts} rooms={rooms}/>
+          <TrendingPanel T={T} posts={posts} toggleHeart={toggleHeart}/>
+        </aside>
       </div>
 
       {/* ── Mobile Bottom Nav ── */}
